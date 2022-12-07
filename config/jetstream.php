@@ -76,6 +76,6 @@ return [
     |
     */
 
-    'profile_photo_disk' => 'public/avatar',
+    'profile_photo_disk' => 'public',
 
 ];

@@ -2,9 +2,11 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
 
@@ -27,7 +29,12 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
+        /* @var Role $role */
+        $role = Role::where('slug', 'user')->first();
+
         return User::create([
+            'uuid' => Str::uuid(),
+            'role_id' => $role->id,
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
