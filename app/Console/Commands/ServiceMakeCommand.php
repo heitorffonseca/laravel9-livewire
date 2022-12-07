@@ -57,28 +57,6 @@ class ServiceMakeCommand extends GeneratorCommand
     }
 
     /**
-     * Replace the model for the given stub.
-     *
-     * @param string $stub
-     * @param $name
-     * @return bool|ServiceMakeCommand
-     */
-    protected function replaceModel(string &$stub, $name): bool|ServiceMakeCommand
-    {
-        if ($this->option('model')) {
-            $model = $this->option('model');
-
-            if (!class_exists("App\\Models\\{$model}") && ! $this->option('force')) {
-                return false;
-            }
-
-            $stub = str_replace('{{ model }}', str_replace("App\\Model\\", "", $model), $stub);
-        }
-
-        return $this;
-    }
-
-    /**
      * Build the class with the given name.
      *
      * @param  string  $name
@@ -109,9 +87,7 @@ class ServiceMakeCommand extends GeneratorCommand
     protected function getStub(): string
     {
         if ($this->option('model')) {
-            $model = $this->option('model');
-
-            if (!class_exists("App\\Models\\{$model}") && ! $this->option('force')) {
+            if (!class_exists("App\\Models\\{$this->option('model')}") && ! $this->option('force')) {
                 return false;
             }
 
