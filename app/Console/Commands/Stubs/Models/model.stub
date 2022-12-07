@@ -1,0 +1,141 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Exceptions\FailedToValidateEntityException;
+use App\Traits\ErrorHandle;
+use App\Traits\StringManipulation;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+
+/**
+ * Class {{ class }}
+ * @package {{ namespace }}
+ *
+ * @property integer $id
+ * add properties
+ * @property boolean|integer $is_active
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
+class {{ class }} extends Model
+{
+    use HasFactory, StringManipulation, ErrorHandle;
+
+        protected $table = '';
+
+        protected $fillable = [
+            'uuid',
+            // add fields
+            'is_active'
+        ];
+
+        protected $casts = [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime'
+        ];
+
+        /**
+         * =======================================================
+         * DATABASE
+         * =======================================================
+         */
+
+        /**
+         * Get the required fields for the save entity
+         *
+         * @return array $array
+         */
+        private static function getRequiredSaveEntityFields(): array
+        {
+            return [
+                // add fields
+            ];
+        }
+
+        /**
+         * Parse the request to create a new entity
+         *
+         * @param array $data
+         * @param int|null $id
+         * @return {{ class }}
+         * @throws FailedToValidateEntityException
+         */
+        public static function saveEntity(array $data, ?int $id = null) : {{ class }}
+        {
+            $parsedData = [];
+
+            // Check if request has the required fields
+            $requiredFields = self::getRequiredSaveEntityFields();
+
+            if(sizeof( array_intersect(array_keys($data), $requiredFields) ) != sizeof($requiredFields)) {
+                return self::throwFailedSaveEntityValidation();
+            }
+
+            if(!$id) $parsedData['uuid'] = Str::uuid();
+
+            // add parse fields
+
+            return self::_saveEntity($parsedData, $id);
+        }
+
+        /**
+         * Parse the request to delete the entity
+         *
+         * @param integer $id
+         * @return boolean
+         */
+        public static function deleteEntity(int $id): bool
+        {
+            return self::_deleteEntity($id);
+        }
+
+        /**
+         * Parse the request to activate the entity
+         *
+         * @param integer $id
+         * @return boolean
+         */
+        public static function activateEntity(int $id): bool
+        {
+            return self::_activateEntity($id);
+        }
+
+        /**
+         * Save the entity to the database
+         *
+         * @param array $data
+         * @param integer|null $id
+         * @return {{ class }}
+         */
+        private static function _saveEntity(array $data, ?int $id = null)
+        {
+            return self::updateOrCreate([ 'id' => $id ], $data);
+        }
+
+        /**
+         * Delete the entity on the database
+         *
+         * @param integer $id
+         * @return boolean
+         */
+        private static function _deleteEntity(int $id): bool
+        {
+            self::where('id', $id)->update(['is_active' => false]);
+            return true;
+        }
+
+        /**
+         * Activate the entity on the database
+         *
+         * @param integer $id
+         * @return boolean
+         */
+        private static function _activateEntity(int $id): bool
+        {
+            self::where('id', $id)->update(['is_active' => true]);
+            return true;
+        }
+}

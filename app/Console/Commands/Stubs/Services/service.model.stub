@@ -1,0 +1,79 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Exceptions\FailedToValidateEntityException;
+use App\Models\{{ DummyModelService }};
+use Illuminate\Http\Request;
+
+class {{ class }}
+{
+    /**
+     * get {{ DummyModelService }}
+     *
+     * @param bool $withTrashed
+     * @return mixed
+     */
+    public function get{{ DummyModelService }}All(bool $withTrashed = false): mixed
+    {
+        return {{ DummyModelService }}::when(!$withTrashed, function ($query) {
+            return $query->where("is_active", true);
+        })
+            ->get();
+    }
+
+    /**
+     * get {{ DummyModelService }} by id
+     *
+     * @param int $id
+     * @param bool $withTrashed
+     * @return mixed
+     */
+    public function get{{ DummyModelService }}ById(int $id, bool $withTrashed = false): mixed
+    {
+        return {{ DummyModelService }}::when(!$withTrashed, function ($query) {
+            return $query->where("is_active", true);
+        })
+            ->where("id", $id)
+            ->first();
+    }
+
+    /**
+     * enable {{ DummyModelService }} by id
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function enable{{ DummyModelService }}ById(int $id): bool
+    {
+        return {{ DummyModelService }}::activateEntity($id);
+    }
+
+    /**
+     * disable {{ DummyModelService }} by id
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function disable{{ DummyModelService }}ById(int $id): bool
+    {
+        return {{ DummyModelService }}::deleteEntity($id);
+    }
+
+    /**
+     * parse fields to save entity
+     *
+     * @param Request $request
+     * @param int|null $id
+     * @return {{ DummyModelService }}
+     * @throws FailedToValidateEntityException
+     */
+    public function save(Request $request, ?int $id = null): {{ DummyModelService }}
+    {
+        $data = [
+            // add fields
+        ];
+
+        return {{ DummyModelService }}::saveEntity($data, $id);
+    }
+}
